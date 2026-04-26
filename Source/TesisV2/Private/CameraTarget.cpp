@@ -19,7 +19,7 @@ void UCameraTarget::LockCamera()
 {
 	if (!IsLock)
 	{
-		IsLock = true;
+		
 		TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
 		TArray<AActor*> ActorsToIgnore;
 		TArray<AActor*> OutActors;
@@ -37,6 +37,7 @@ void UCameraTarget::LockCamera()
 		);
 		if (OutActors.Num() != 0)
 		{
+			IsLock = true;
 			SearchEnemy(OutActors);
 		}
 	}
@@ -62,6 +63,7 @@ void UCameraTarget::SearchEnemy(TArray<AActor*>& Enemies)
 		}
 	}
 	Target = ClosestEnemy;
+
 }
 
 // Called when the game starts
