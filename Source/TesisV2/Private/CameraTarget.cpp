@@ -3,6 +3,9 @@
 
 #include "CameraTarget.h"
 
+#include "VectorTypes.h"
+#include "Kismet/KismetMaterialLibrary.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 
@@ -17,9 +20,9 @@ UCameraTarget::UCameraTarget()
 
 void UCameraTarget::LockCamera()
 {
+	isFovChanged = false;
 	if (!IsLock)
 	{
-		
 		TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
 		TArray<AActor*> ActorsToIgnore;
 		TArray<AActor*> OutActors;
@@ -43,8 +46,7 @@ void UCameraTarget::LockCamera()
 	}
 	else
 	{
-		Target = nullptr;
-		IsLock = false;
+		UnLock();
 	}
 }
 
@@ -59,11 +61,54 @@ void UCameraTarget::SearchEnemy(TArray<AActor*>& Enemies)
 		{
 			ClosestEnemy = Actor;
 			MinDistance = FVector::Dist(ActualPlayerPos, Actor->GetActorLocation());
-			
 		}
 	}
 	Target = ClosestEnemy;
+}
 
+void UCameraTarget::SetRotationOverEnemy(AActor* newTarget, float DeltaTime)
+{
+	FRotator Rot = UKismetMathLibrary::FindLookAtRotation(CameraBoom->GetComponentLocation(),
+	                                                      newTarget->GetActorLocation());
+
+	FRotator NewRot = UKismetMathLibrary::RInterpTo(CameraBoom->GetTargetRotation(), Rot, DeltaTime, 5.0f);
+
+	AController* MyController = Cast<APawn>(GetOwner())->GetController();
+	if (MyController)
+	{
+		MyController->SetControlRotation(NewRot);
+	}
+}
+
+void UCameraTarget::CheckDistance()
+{
+	if (FVector::Dist(GetOwner()->GetActorLocation(), Target->GetActorLocation()) > DistanceToCancelLock)
+	{
+		UnLock();
+	}
+}
+
+
+void UCameraTarget::UnLock()
+{
+	Target = nullptr;
+	IsLock = false;
+}
+
+void UCameraTarget::ChangeFOV(float DeltaTime)
+{
+	
+	if (!isFovChanged)
+	{
+		float TargetFOV = IsLock ? LockFov : NormalFov;
+		float NewFOV = UKismetMathLibrary::FInterpTo(Camera->FieldOfView, TargetFOV, DeltaTime, 5.0f);
+		Camera->SetFieldOfView(NewFOV);
+
+		if (FMath::IsNearlyEqual(Camera->FieldOfView, TargetFOV, 0.5f))
+		{
+			isFovChanged = true;
+		}
+	}
 }
 
 // Called when the game starts
@@ -71,7 +116,11 @@ void UCameraTarget::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
+	CameraBoom = GetOwner()->FindComponentByClass<USpringArmComponent>();
+	Radius = 1000.0f;
+	DistanceToCancelLock = 2000.0f;
+	NormalFov = 90.0f;
+	LockFov = 80.0f;
 }
 
 
@@ -80,5 +129,13 @@ void UCameraTarget::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
+	ChangeFOV(DeltaTime);
+	if (IsLock && CameraBoom)
+	{
+		if (Target != nullptr)
+		{
+			SetRotationOverEnemy(Target, DeltaTime);
+			CheckDistance();
+		}
+	}
 }

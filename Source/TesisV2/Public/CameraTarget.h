@@ -3,7 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Camera/CameraComponent.h"
 #include "Components/ActorComponent.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "Microsoft/AllowMicrosoftPlatformTypes.h"
 #include "CameraTarget.generated.h"
 
 
@@ -14,18 +17,42 @@ class TESISV2_API UCameraTarget : public UActorComponent
 
 public:
 	UCameraTarget();
+	//Variables.
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category=CameraTarget)
 	float Radius;
 	UPROPERTY(BlueprintReadOnly, Category = CameraTarget)
 	AActor* Target;
 	UPROPERTY(BlueprintReadOnly, Category = CameraTarget)
 	bool IsLock;
+	UPROPERTY(BlueprintReadWrite,EditAnywhere ,Category = CameraTarget)
+	USpringArmComponent* CameraBoom;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = CameraTarget)
+	float DistanceToCancelLock;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = CameraTarget)
+	UCameraComponent* Camera;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = CameraTarget)
+	float LockFov;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = CameraTarget)
+	float NormalFov;
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = CameraTarget)
+	bool isFovChanged;
+	
 
 	
 	UFUNCTION(BlueprintCallable, Category = CameraTarget)
 	void LockCamera();
 	UFUNCTION(BlueprintCallable, Category = CameraTarget)
 	void SearchEnemy(TArray<AActor*> &Enemies);
+	UFUNCTION(Category = CameraTarget)
+	void SetRotationOverEnemy(AActor* newTarget,float DeltaTime);
+	UFUNCTION(Category = CameraTarget)
+	void CheckDistance();
+	UFUNCTION(Category = CameraTarget)
+	void UnLock();
+	
+	UFUNCTION(Category = CameraTarget)
+	void ChangeFOV(float DeltaTime);
+
 
 
 protected:
