@@ -105,7 +105,7 @@ void UCameraTarget::ChangeFOV(float DeltaTime)
 	if (!isFovChanged)
 	{
 		float TargetFOV = IsLock ? LockFov : NormalFov;
-		float NewFOV = UKismetMathLibrary::FInterpTo(Camera->FieldOfView, TargetFOV, DeltaTime, 5.0f);
+		float NewFOV = UKismetMathLibrary::FInterpTo(Camera->FieldOfView, TargetFOV, DeltaTime, 8.0f);
 		Camera->SetFieldOfView(NewFOV);
 
 		if (FMath::IsNearlyEqual(Camera->FieldOfView, TargetFOV, 0.5f))
@@ -153,8 +153,7 @@ void UCameraTarget::BeginPlay()
 	CameraBoom = GetOwner()->FindComponentByClass<USpringArmComponent>();
 	Radius = 1000.0f;
 	DistanceToCancelLock = 2000.0f;
-	NormalFov = 90.0f;
-	LockFov = 80.0f;
+
 }
 
 
