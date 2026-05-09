@@ -4,9 +4,11 @@
 #include "CameraTarget.h"
 
 #include "VectorTypes.h"
+#include "Components/BillboardComponent.h"
 #include "Kismet/KismetMaterialLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "PaperSpriteComponent.h"
 
 
 // Sets default values for this component's properties
@@ -20,7 +22,7 @@ UCameraTarget::UCameraTarget()
 
 void UCameraTarget::LockCamera()
 {
-	isFovChanged = false;
+	StartChangeFOV();
 	if (!IsLock)
 	{
 		TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
@@ -64,6 +66,7 @@ void UCameraTarget::SearchEnemy(TArray<AActor*>& Enemies)
 		}
 	}
 	Target = ClosestEnemy;
+	SetMarkEnemy();
 }
 
 void UCameraTarget::SetRotationOverEnemy(AActor* newTarget, float DeltaTime)
@@ -91,13 +94,14 @@ void UCameraTarget::CheckDistance()
 
 void UCameraTarget::UnLock()
 {
+	SetMarkEnemy();
 	Target = nullptr;
 	IsLock = false;
+	StartChangeFOV();
 }
 
 void UCameraTarget::ChangeFOV(float DeltaTime)
 {
-	
 	if (!isFovChanged)
 	{
 		float TargetFOV = IsLock ? LockFov : NormalFov;
@@ -108,6 +112,36 @@ void UCameraTarget::ChangeFOV(float DeltaTime)
 		{
 			isFovChanged = true;
 		}
+	}
+}
+
+void UCameraTarget::StartChangeFOV()
+{
+	isFovChanged = false;
+}
+
+void UCameraTarget::SetMarkEnemy()
+{
+	
+	UPaperSpriteComponent* Sprite;
+	if (Target != nullptr)
+	{
+		Sprite = Target->GetComponentByClass<UPaperSpriteComponent>();
+		if (Sprite != nullptr)
+		{
+			if (Sprite->IsVisible())
+			{
+				Sprite->SetVisibility(false);
+			}
+			else
+			{
+				Sprite->SetVisibility(true);
+			}
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("No hay sprite"));
 	}
 }
 

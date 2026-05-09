@@ -52,6 +52,10 @@ public:
 	
 	UFUNCTION(Category = CameraTarget)
 	void ChangeFOV(float DeltaTime);
+	
+	void StartChangeFOV();
+	
+	void SetMarkEnemy();
 
 
 
