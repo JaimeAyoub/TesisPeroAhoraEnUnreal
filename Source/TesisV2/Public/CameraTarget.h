@@ -47,7 +47,7 @@ public:
 	void SetRotationOverEnemy(AActor* newTarget,float DeltaTime);
 	UFUNCTION(Category = CameraTarget)
 	void CheckDistance();
-	UFUNCTION(Category = CameraTarget)
+	UFUNCTION(BlueprintCallable,Category = CameraTarget)
 	void UnLock();
 	
 	UFUNCTION(Category = CameraTarget)
