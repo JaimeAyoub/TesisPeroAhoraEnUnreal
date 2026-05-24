@@ -102,9 +102,23 @@ void UCameraTarget::UnLock()
 
 void UCameraTarget::ChangeFOV(float DeltaTime)
 {
+	float TargetFOV;
+	UE_LOG(LogTemp, Warning, TEXT("isFovChanged: %d | isSprinting: %d"), isFovChanged, isSprinting);
 	if (!isFovChanged)
 	{
-		float TargetFOV = IsLock ? LockFov : NormalFov;
+		if (isSprinting)
+			FovToChange = 120.0f;
+		
+		if (IsLock)
+			FovToChange = 80.0f;
+		if (IsLock || isSprinting)
+		{
+			TargetFOV = FovToChange;
+		}
+		else
+		{
+			TargetFOV = NormalFov;
+		}
 		float NewFOV = UKismetMathLibrary::FInterpTo(Camera->FieldOfView, TargetFOV, DeltaTime, 8.0f);
 		Camera->SetFieldOfView(NewFOV);
 
@@ -113,6 +127,7 @@ void UCameraTarget::ChangeFOV(float DeltaTime)
 			isFovChanged = true;
 		}
 	}
+
 }
 
 void UCameraTarget::StartChangeFOV()
@@ -122,7 +137,6 @@ void UCameraTarget::StartChangeFOV()
 
 void UCameraTarget::SetMarkEnemy()
 {
-	
 	UPaperSpriteComponent* Sprite;
 	if (Target != nullptr)
 	{
@@ -149,11 +163,12 @@ void UCameraTarget::SetMarkEnemy()
 void UCameraTarget::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 	CameraBoom = GetOwner()->FindComponentByClass<USpringArmComponent>();
 	Radius = 1000.0f;
 	DistanceToCancelLock = 2000.0f;
-
+	NormalFov = 90.0f;
+	StartChangeFOV();
 }
 
 

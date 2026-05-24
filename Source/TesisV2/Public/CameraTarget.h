@@ -31,11 +31,13 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = CameraTarget)
 	UCameraComponent* Camera;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = CameraTarget)
-	float LockFov;
+	float FovToChange;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = CameraTarget)
 	float NormalFov;
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = CameraTarget)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = CameraTarget)
 	bool isFovChanged;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = CameraTarget)
+	bool isSprinting;
 	
 
 	
@@ -49,10 +51,9 @@ public:
 	void CheckDistance();
 	UFUNCTION(BlueprintCallable,Category = CameraTarget)
 	void UnLock();
-	
-	UFUNCTION(Category = CameraTarget)
+	UFUNCTION(BlueprintCallable,Category = CameraTarget)
 	void ChangeFOV(float DeltaTime);
-	
+	UFUNCTION(BlueprintCallable,Category = CameraTarget)
 	void StartChangeFOV();
 	
 	void SetMarkEnemy();
