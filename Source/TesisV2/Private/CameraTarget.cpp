@@ -107,7 +107,7 @@ void UCameraTarget::ChangeFOV(float DeltaTime)
 	if (!isFovChanged)
 	{
 		if (isSprinting)
-			FovToChange = 120.0f;
+			FovToChange = 100.0f;
 		
 		if (IsLock)
 			FovToChange = 80.0f;
