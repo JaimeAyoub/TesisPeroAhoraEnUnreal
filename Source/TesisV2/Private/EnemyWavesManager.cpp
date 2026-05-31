@@ -12,6 +12,12 @@ AEnemyWavesManager::AEnemyWavesManager()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
+
+	BeginWall = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BeginW"));
+	BeginWall->SetupAttachment(RootComponent);
+
+	EndWall = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("EndW"));
+	EndWall->SetupAttachment(RootComponent);
 }
 
 void AEnemyWavesManager::StartWave()
@@ -25,12 +31,36 @@ void AEnemyWavesManager::StartWave()
 			{
 				if (indexSpawners > EnemiesToSpawn)
 					indexSpawners = 0;
-				FVector SpawnLocation = Spawners[indexSpawners]->GetActorLocation();
+				FVector SpawnLocation = Spawners[indexSpawners]->GetTargetLocation();
 				FRotator SpawnRotation = FRotator::ZeroRotator;
 
 				ACharacter* NewEnemy = GetWorld()->SpawnActor<ACharacter>(EnemyReference, SpawnLocation, SpawnRotation);
+				AliveEnemies.Add(NewEnemy);
 			}
 		}
+	}
+}
+
+void AEnemyWavesManager::DisableWalls()
+{
+	if (BeginWall != nullptr && EndWall != nullptr)
+	{
+		BeginWall->SetVisibility(false);
+		BeginWall->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+		EndWall->SetVisibility(false);
+		EndWall->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
+}
+
+void AEnemyWavesManager::EnableWalls()
+{
+	if (BeginWall != nullptr && EndWall != nullptr)
+	{
+		BeginWall->SetVisibility(true);
+		BeginWall->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		EndWall->SetVisibility(true);
+		EndWall->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	}
 }
 
@@ -38,11 +68,8 @@ void AEnemyWavesManager::StartWave()
 void AEnemyWavesManager::BeginPlay()
 {
 	Super::BeginPlay();
-	if (BeginWall != nullptr && EndWall != nullptr)
-	{
-		BeginWall->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
-		EndWall->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
-	}
+
+	DisableWalls();
 }
 
 // Called every frame

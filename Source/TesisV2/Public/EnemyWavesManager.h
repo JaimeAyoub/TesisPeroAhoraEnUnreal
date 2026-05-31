@@ -4,7 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Components/SceneComponent.h"
+#include "Engine/TargetPoint.h"
 #include "EnemyWavesManager.generated.h"
+
 
 UCLASS()
 class TESISV2_API AEnemyWavesManager : public AActor
@@ -17,18 +20,18 @@ public:
 
 	
 	UPROPERTY(BlueprintReadWrite,EditAnywhere,Category = "EnemyWave")
-	AActor* BeginWall;
+	UStaticMeshComponent* BeginWall;
 	UPROPERTY(BlueprintReadWrite,EditAnywhere,Category = "EnemyWave")
-	AActor* EndWall;
+	UStaticMeshComponent* EndWall;
 	UPROPERTY(BlueprintReadWrite,EditAnywhere,Category = "EnemyWave")
 	AActor* TriggerZone;
 	UPROPERTY(BlueprintReadWrite,EditAnywhere,Category = "EnemyWave")
-	TArray<AActor*> AliveEnemies;
+	TArray<ACharacter*> AliveEnemies;
 	UPROPERTY(BlueprintReadWrite,EditAnywhere, Category = "EnemyWave")
 	int EnemiesToSpawn;
 	
 	UPROPERTY(BlueprintReadWrite,EditAnywhere, Category = "EnemyWave")
-	TArray<AActor*> Spawners;
+	TArray<ATargetPoint*> Spawners;
 	
 	
 	UPROPERTY(BlueprintReadWrite,EditAnywhere, Category = "EnemyWave")
@@ -38,7 +41,10 @@ public:
 	
 	UFUNCTION(blueprintCallable,Category = "EnemyWave")
 	void StartWave();
-	
+	UFUNCTION(blueprintCallable,Category = "EnemyWave")
+	void DisableWalls();
+	UFUNCTION(blueprintCallable,Category = "EnemyWave")
+	void EnableWalls();
 	
 	
 protected:
