@@ -27,7 +27,7 @@ void AEnemyWavesManager::StartWave()
 		int indexSpawners = 0;
 		for (int i = 0; i < EnemiesToSpawn; i++)
 		{
-			if (EnemyReference != nullptr)
+			if (EnemyReference != nullptr )
 			{
 				if (indexSpawners > EnemiesToSpawn)
 					indexSpawners = 0;
@@ -36,6 +36,7 @@ void AEnemyWavesManager::StartWave()
 
 				ACharacter* NewEnemy = GetWorld()->SpawnActor<ACharacter>(EnemyReference, SpawnLocation, SpawnRotation);
 				AliveEnemies.Add(NewEnemy);
+				indexSpawners++;
 			}
 		}
 	}
