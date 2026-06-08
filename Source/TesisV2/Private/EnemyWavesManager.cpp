@@ -24,19 +24,17 @@ void AEnemyWavesManager::StartWave()
 {
 	if (EnemiesToSpawn > 0 && !Spawners.IsEmpty())
 	{
-		int indexSpawners = 0;
 		for (int i = 0; i < EnemiesToSpawn; i++)
 		{
-			if (EnemyReference != nullptr )
+			if (EnemyReference != nullptr)
 			{
-				if (indexSpawners > EnemiesToSpawn)
-					indexSpawners = 0;
+				int indexSpawners = i % Spawners.Num();
+
 				FVector SpawnLocation = Spawners[indexSpawners]->GetTargetLocation();
 				FRotator SpawnRotation = FRotator::ZeroRotator;
 
 				ACharacter* NewEnemy = GetWorld()->SpawnActor<ACharacter>(EnemyReference, SpawnLocation, SpawnRotation);
 				AliveEnemies.Add(NewEnemy);
-				indexSpawners++;
 			}
 		}
 	}
