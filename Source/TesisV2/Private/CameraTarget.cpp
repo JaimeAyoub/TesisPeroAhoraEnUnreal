@@ -104,7 +104,7 @@ void UCameraTarget::ChangeFOV(float DeltaTime)
 {
 	float TargetFOV;
 	UE_LOG(LogTemp, Warning, TEXT("isFovChanged: %d | isSprinting: %d"), isFovChanged, isSprinting);
-	if (!isFovChanged)
+	if (!isFovChanged && Camera)
 	{
 		if (isSprinting)
 			FovToChange = 100.0f;
