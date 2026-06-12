@@ -108,7 +108,7 @@ void UCameraTarget::ChangeFOV(float DeltaTime)
 	{
 		if (isSprinting)
 			FovToChange = 100.0f;
-		
+
 		if (IsLock)
 			FovToChange = 80.0f;
 		if (IsLock || isSprinting)
@@ -127,7 +127,6 @@ void UCameraTarget::ChangeFOV(float DeltaTime)
 			isFovChanged = true;
 		}
 	}
-
 }
 
 void UCameraTarget::StartChangeFOV()
@@ -163,7 +162,7 @@ void UCameraTarget::SetMarkEnemy()
 void UCameraTarget::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	CameraBoom = GetOwner()->FindComponentByClass<USpringArmComponent>();
 	Radius = 1000.0f;
 	DistanceToCancelLock = 2000.0f;
@@ -177,7 +176,10 @@ void UCameraTarget::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	ChangeFOV(DeltaTime);
+	if (Camera != nullptr)
+	{
+		ChangeFOV(DeltaTime);
+	}
 	if (IsLock && CameraBoom)
 	{
 		if (Target != nullptr)
