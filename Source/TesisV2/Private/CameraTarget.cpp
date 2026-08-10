@@ -9,6 +9,8 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "PaperSpriteComponent.h"
+#include "GameFramework/Character.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 
 // Sets default values for this component's properties
@@ -44,6 +46,11 @@ void UCameraTarget::LockCamera()
 		{
 			IsLock = true;
 			SearchEnemy(OutActors);
+		}
+		if (ACharacter* OwnerChar = Cast<ACharacter>(GetOwner()))
+		{
+			OwnerChar->GetCharacterMovement()->bOrientRotationToMovement = false;
+			OwnerChar->bUseControllerRotationYaw = true;
 		}
 	}
 	else
@@ -98,6 +105,11 @@ void UCameraTarget::UnLock()
 	Target = nullptr;
 	IsLock = false;
 	StartChangeFOV();
+	if (ACharacter* OwnerChar = Cast<ACharacter>(GetOwner()))
+	{
+		OwnerChar->GetCharacterMovement()->bOrientRotationToMovement = true;
+		OwnerChar->bUseControllerRotationYaw = false;
+	}
 }
 
 void UCameraTarget::ChangeFOV(float DeltaTime)
