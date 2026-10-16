@@ -35,6 +35,8 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = CameraTarget)
 	float NormalFov;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = CameraTarget)
+	float TargetFOV;;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = CameraTarget)
 	bool isFovChanged;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = CameraTarget)
 	bool isSprinting;

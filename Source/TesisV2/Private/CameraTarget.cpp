@@ -114,31 +114,14 @@ void UCameraTarget::UnLock()
 
 void UCameraTarget::ChangeFOV(float DeltaTime)
 {
-	float TargetFOV;
-	UE_LOG(LogTemp, Warning, TEXT("isFovChanged: %d | isSprinting: %d"), isFovChanged, isSprinting);
-	if (!isFovChanged && Camera)
-	{
-		if (isSprinting)
-			FovToChange = 100.0f;
+	if (!Camera) return;
+	float Desired = NormalFov;
+	if (IsLock) Desired = 80.0f; 
+	else if (isSprinting) Desired = 100.0f;
 
-		if (IsLock)
-			FovToChange = 80.0f;
-		if (IsLock || isSprinting)
-		{
-			TargetFOV = FovToChange;
-		}
-		else
-		{
-			TargetFOV = NormalFov;
-		}
-		float NewFOV = UKismetMathLibrary::FInterpTo(Camera->FieldOfView, TargetFOV, DeltaTime, 8.0f);
-		Camera->SetFieldOfView(NewFOV);
-
-		if (FMath::IsNearlyEqual(Camera->FieldOfView, TargetFOV, 0.5f))
-		{
-			isFovChanged = true;
-		}
-	}
+	UE_LOG(LogTemp, Warning, TEXT("Desired FOV: %f"), Desired);
+	const float NewFOV = FMath::FInterpTo(Camera->FieldOfView, Desired, DeltaTime, 8.0f);
+	Camera->SetFieldOfView(NewFOV);
 }
 
 void UCameraTarget::StartChangeFOV()
@@ -188,10 +171,10 @@ void UCameraTarget::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (Camera != nullptr)
-	{
-		ChangeFOV(DeltaTime);
-	}
+	// if (Camera != nullptr)
+	// {
+	// 	ChangeFOV(DeltaTime);
+	// }
 	if (IsLock && CameraBoom)
 	{
 		if (Target != nullptr)
