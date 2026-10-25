@@ -58,6 +58,7 @@ public:
 	UFUNCTION(BlueprintCallable,Category = CameraTarget)
 	void StartChangeFOV();
 	
+	UFUNCTION(BlueprintCallable,Category = CameraTarget)
 	void SetMarkEnemy();
 
 
